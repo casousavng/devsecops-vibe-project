@@ -1,14 +1,15 @@
-name: Security Scan
-on: [push]
+name: DevSecOps-Pipeline
+on: [push] # Sempre que envias código, o Polícia atua
 jobs:
   trivy-scan:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout Código
         uses: actions/checkout@v3
-      - name: Run Trivy Scan
+
+      - name: Correr Auditoria Trivy
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'fs'
           severity: 'CRITICAL,HIGH'
-          format: 'table'
+          exit-code: '1' # IMPORTANTE: Se houver erros, o pipeline "falha" (fica vermelho)

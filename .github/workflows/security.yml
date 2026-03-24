@@ -1,15 +1,21 @@
-name: DevSecOps-Pipeline
-on: [push] # Sempre que envias código, o Polícia atua
+name: DevSecOps-Vibe-Audit
+on: [push, pull_request]
+
 jobs:
   trivy-scan:
+    name: Security Auditor
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Código
-        uses: actions/checkout@v3
+      - name: Checkout do Código
+        uses: actions/checkout@v4 # Versão mais recente
 
-      - name: Correr Auditoria Trivy
+      - name: Auditoria de Segurança Completa
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'fs'
-          severity: 'CRITICAL,HIGH'
-          exit-code: '1' # IMPORTANTE: Se houver erros, o pipeline "falha" (fica vermelho)
+          scan-ref: '.'
+          # AQUI ESTÁ O SEGREDO: Ativamos explicitamente os 3 scanners
+          scanners: 'vuln,secret,misconfig' 
+          severity: 'CRITICAL,HIGH,MEDIUM'
+          format: 'table'
+          exit-code: '1' # Falha o pipeline se encontrar erros HIGH/CRITICAL
